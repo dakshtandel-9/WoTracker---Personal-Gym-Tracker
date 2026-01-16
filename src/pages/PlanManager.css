@@ -1,0 +1,79 @@
+.plan-manager .create-btn {
+    width: 100%;
+    margin-bottom: var(--space-xl);
+}
+
+.create-plan-form {
+    margin-bottom: var(--space-xl);
+}
+
+.create-plan-form h3 {
+    margin-bottom: var(--space-lg);
+}
+
+.create-plan-form .form-actions {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: flex-end;
+    margin-top: var(--space-lg);
+}
+
+.plans-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.sample-plans {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.sample-plan {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-md);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: left;
+}
+
+.sample-plan:hover {
+    border-color: var(--accent-primary);
+    background: var(--bg-card-hover);
+}
+
+.sample-plan.featured {
+    background: var(--bg-card);
+    border: 2px solid var(--accent-primary);
+    box-shadow: var(--shadow-glow);
+    padding: var(--space-lg);
+}
+
+.sample-plan.featured:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.4);
+}
+
+.sample-plan.featured .sample-name {
+    font-size: var(--font-size-lg);
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sample-name {
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.sample-desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}

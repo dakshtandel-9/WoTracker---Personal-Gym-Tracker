@@ -1,0 +1,74 @@
+.day-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-lg);
+    transition: all var(--transition-normal);
+}
+
+.day-card:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+}
+
+.day-card-header {
+    margin-bottom: var(--space-sm);
+}
+
+.day-number {
+    font-size: var(--font-size-xs);
+    color: var(--accent-primary);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: var(--space-xs);
+}
+
+.day-name {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+}
+
+.day-card-meta {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+    font-size: var(--font-size-sm);
+}
+
+.exercise-count {
+    color: var(--text-secondary);
+}
+
+.last-performed {
+    color: var(--text-muted);
+}
+
+.day-exercises {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-lg);
+}
+
+.exercise-preview {
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--bg-tertiary);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+}
+
+.exercise-preview.more {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.day-card-actions {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.day-card-actions .btn {
+    flex: 1;
+}

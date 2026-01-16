@@ -1,0 +1,31 @@
+.exercise-form {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-lg);
+    border: 1px solid var(--border-color);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+}
+
+.form-actions {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: flex-end;
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+}
+
+@media (max-width: 480px) {
+    .form-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .form-row .form-group:last-child {
+        grid-column: span 2;
+    }
+}

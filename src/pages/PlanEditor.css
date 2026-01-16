@@ -1,0 +1,155 @@
+.plan-editor .plan-header {
+    margin-bottom: var(--space-xl);
+}
+
+.plan-name-edit {
+    margin-bottom: var(--space-sm);
+}
+
+.plan-name-edit .form-input {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    background: transparent;
+    padding: var(--space-xs);
+}
+
+.page-title.editable {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.page-title.editable:hover {
+    color: var(--accent-primary);
+}
+
+.page-title.editable svg {
+    opacity: 0.5;
+}
+
+.days-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.day-block {
+    overflow: hidden;
+}
+
+.day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.day-info .day-number {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--accent-primary);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: var(--space-xs);
+}
+
+.day-info .day-name {
+    font-size: var(--font-size-lg);
+}
+
+.exercises-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.exercise-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.exercise-item:hover {
+    background: var(--bg-tertiary);
+}
+
+.exercise-number {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-tertiary);
+    border-radius: 50%;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--accent-primary);
+}
+
+.exercise-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.exercise-info .exercise-name {
+    font-weight: var(--font-weight-medium);
+}
+
+.exercise-info .exercise-target {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
+
+.exercise-item svg {
+    color: var(--text-muted);
+}
+
+.no-exercises {
+    text-align: center;
+    padding: var(--space-md);
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.add-exercise-btn {
+    width: 100%;
+}
+
+.add-day-form {
+    margin-bottom: var(--space-lg);
+}
+
+.add-day-form .form-actions {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: flex-end;
+    margin-top: var(--space-md);
+}
+
+.add-day-btn {
+    width: 100%;
+    margin-bottom: var(--space-xl);
+}
+
+.done-actions {
+    position: sticky;
+    bottom: var(--space-md);
+    padding-top: var(--space-md);
+}
+
+.done-actions .btn {
+    width: 100%;
+}

@@ -1,0 +1,28 @@
+.progress-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+}
+
+.progress-indicator.up {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.progress-indicator.down {
+    background: var(--danger-bg);
+    color: var(--danger);
+}
+
+.progress-indicator.stable {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.progress-label {
+    font-size: var(--font-size-xs);
+}

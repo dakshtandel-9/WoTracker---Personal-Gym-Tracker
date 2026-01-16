@@ -1,0 +1,99 @@
+.history .page-header {
+    margin-bottom: var(--space-lg);
+}
+
+.filters {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
+}
+
+.filter-btn {
+    flex: 1;
+    padding: var(--space-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.filter-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--text-primary);
+}
+
+.filter-btn.active {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+.sessions-grouped {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xl);
+}
+
+.date-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.date-header {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sessions-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.session-wrapper {
+    cursor: pointer;
+}
+
+.stats-section {
+    padding: var(--space-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-md);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-md);
+}
+
+.stat-card .stat-value {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--accent-primary);
+}
+
+.stat-card .stat-label {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    text-transform: uppercase;
+}

@@ -1,0 +1,107 @@
+.session-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-lg);
+    transition: all var(--transition-normal);
+}
+
+.session-card:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.session-card.abandoned {
+    opacity: 0.7;
+}
+
+.session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-md);
+}
+
+.session-date {
+    display: flex;
+    flex-direction: column;
+}
+
+.date-main {
+    font-weight: var(--font-weight-semibold);
+}
+
+.date-time {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+}
+
+.session-info {
+    margin-bottom: var(--space-md);
+}
+
+.session-day {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-xs);
+}
+
+.session-plan {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
+
+.session-summary {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.session-exercises {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+}
+
+.exercise-log {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-sm);
+}
+
+.exercise-name {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+}
+
+.exercise-sets {
+    display: flex;
+    gap: var(--space-xs);
+}
+
+.set-badge {
+    padding: 2px 6px;
+    font-size: var(--font-size-xs);
+    border-radius: var(--border-radius-sm);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.set-badge.completed {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.set-badge.failed,
+.set-badge.partial {
+    background: var(--warning-bg);
+    color: var(--warning);
+}
+
+.set-badge.skipped {
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+}

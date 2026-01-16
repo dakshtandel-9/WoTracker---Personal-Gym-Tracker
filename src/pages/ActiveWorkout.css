@@ -1,0 +1,283 @@
+.active-workout {
+    padding-bottom: 120px;
+}
+
+.workout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+}
+
+.workout-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.workout-day {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.workout-time {
+    font-size: var(--font-size-sm);
+    color: var(--accent-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: var(--space-xs);
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent-gradient);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: var(--space-lg);
+}
+
+.exercise-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.exercise-indicator {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: var(--font-weight-medium);
+    padding: var(--space-xs) var(--space-md);
+    background: var(--bg-tertiary);
+    border-radius: var(--border-radius-md);
+}
+
+.current-exercise {
+    margin-bottom: var(--space-xl);
+}
+
+.exercise-header-card {
+    text-align: center;
+    padding: var(--space-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.exercise-header-card .exercise-name {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--space-sm);
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.exercise-header-card .exercise-target {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.exercise-header-card .exercise-last {
+    color: var(--success);
+    font-size: var(--font-size-sm);
+}
+
+.sets-overview {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.set-dot {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    font-weight: var(--font-weight-bold);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.set-dot:hover {
+    border-color: var(--accent-primary);
+    color: var(--text-primary);
+}
+
+.set-dot.active {
+    border-color: var(--accent-primary);
+    background: rgba(99, 102, 241, 0.2);
+    color: var(--accent-primary);
+}
+
+.set-dot.completed {
+    background: var(--success);
+    border-color: var(--success);
+    color: var(--text-inverse);
+}
+
+.set-dot.skipped {
+    background: var(--bg-tertiary);
+    border-color: var(--warning);
+    color: var(--warning);
+}
+
+.set-dot.failed {
+    background: var(--danger-bg);
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.logged-sets {
+    margin-top: var(--space-lg);
+    padding: var(--space-md);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-lg);
+}
+
+.logged-sets h4 {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sets-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.logged-set {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-sm);
+    background: var(--bg-card);
+    border-radius: var(--border-radius-sm);
+}
+
+.logged-set .set-num {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    min-width: 50px;
+}
+
+.logged-set .set-data {
+    flex: 1;
+    font-weight: var(--font-weight-medium);
+}
+
+.logged-set .set-badge {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: var(--font-size-sm);
+}
+
+.logged-set.completed .set-badge {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.logged-set.skipped .set-badge {
+    background: var(--warning-bg);
+    color: var(--warning);
+}
+
+.logged-set.failed .set-badge {
+    background: var(--danger-bg);
+    color: var(--danger);
+}
+
+.exercise-list-mini {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
+}
+
+.exercise-mini {
+    flex: 1 1 calc(50% - var(--space-sm));
+    min-width: 140px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.exercise-mini:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.exercise-mini.active {
+    border-color: var(--accent-primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.exercise-mini.complete {
+    border-color: var(--success);
+    background: var(--success-bg);
+}
+
+.mini-name {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mini-progress {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    padding: 2px 6px;
+    border-radius: var(--border-radius-sm);
+}
+
+.complete-section {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-md);
+    background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border-color);
+}
+
+.complete-btn {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+}

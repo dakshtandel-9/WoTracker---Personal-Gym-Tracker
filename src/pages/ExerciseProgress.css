@@ -1,0 +1,172 @@
+.exercise-progress .form-group {
+    margin-bottom: var(--space-xl);
+}
+
+.exercise-select {
+    font-size: var(--font-size-lg);
+    padding: var(--space-md);
+}
+
+.stats-overview {
+    margin-bottom: var(--space-xl);
+}
+
+.stats-overview .stat-card.primary {
+    padding: var(--space-xl);
+    background: var(--bg-card);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--border-radius-lg);
+    text-align: center;
+    margin-bottom: var(--space-md);
+    box-shadow: var(--shadow-glow);
+}
+
+.stats-overview .stat-card.primary .stat-label {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: var(--space-sm);
+}
+
+.stats-overview .stat-card.primary .stat-value {
+    display: block;
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stats-overview .stat-card.primary .stat-date {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-top: var(--space-xs);
+}
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+}
+
+.stats-row .stat-card {
+    padding: var(--space-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    text-align: center;
+}
+
+.stats-row .stat-card .stat-label {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: var(--space-sm);
+}
+
+.stats-row .stat-card .stat-value {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--accent-primary);
+}
+
+.last-performance {
+    margin-bottom: var(--space-xl);
+}
+
+.performance-card {
+    padding: var(--space-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+}
+
+.performance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+}
+
+.performance-weight {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--success);
+}
+
+.performance-date {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
+
+.performance-sets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+}
+
+.performance-sets .set-badge {
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
+}
+
+.performance-sets .set-badge.completed {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.history-section {
+    margin-bottom: var(--space-xl);
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.history-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+}
+
+.entry-date {
+    display: flex;
+    flex-direction: column;
+}
+
+.entry-date .date-main {
+    font-weight: var(--font-weight-medium);
+}
+
+.entry-date .date-day {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
+
+.entry-data {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.entry-weight {
+    font-weight: var(--font-weight-bold);
+    color: var(--accent-primary);
+}
+
+.entry-sets {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
