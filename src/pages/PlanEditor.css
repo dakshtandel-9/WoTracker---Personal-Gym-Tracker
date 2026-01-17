@@ -117,6 +117,39 @@
     color: var(--text-muted);
 }
 
+/* Drag handle */
+.drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    color: var(--text-muted);
+    cursor: grab;
+    transition: color var(--transition-fast);
+}
+
+.drag-handle:hover {
+    color: var(--accent-primary);
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.exercise-item.dragging {
+    opacity: 0.5;
+    background: rgba(99, 102, 241, 0.2);
+    border: 2px dashed var(--accent-primary);
+}
+
+.exercise-item {
+    transition: all var(--transition-fast);
+}
+
+.exercise-item:hover {
+    background: var(--bg-tertiary);
+}
+
 .no-exercises {
     text-align: center;
     padding: var(--space-md);

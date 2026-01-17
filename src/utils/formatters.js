@@ -63,14 +63,18 @@ export function formatSetsReps(sets, reps) {
 }
 
 /**
- * Format exercise target
+ * Format exercise target - now uses targetReps for rep ranges
  */
 export function formatExerciseTarget(exercise) {
-    let target = formatSetsReps(exercise.plannedSets, exercise.plannedReps);
-    if (exercise.targetWeight) {
-        target += ` @ ${formatWeight(exercise.targetWeight)}`;
+    const sets = exercise.plannedSets || 0;
+    // Use targetReps if available (e.g., "6-8"), otherwise fall back to plannedReps
+    const reps = exercise.targetReps || exercise.plannedReps || 0;
+
+    if (reps === 0 || reps === '0') {
+        return `${sets} sets`;
     }
-    return target;
+
+    return `${sets} × ${reps}`;
 }
 
 /**

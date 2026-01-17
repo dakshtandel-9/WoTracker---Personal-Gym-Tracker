@@ -9,6 +9,20 @@ export default function ExerciseProgress() {
     const { getAllExerciseNames, getExerciseStats, getHistory } = useExerciseHistory();
     const exerciseNames = getAllExerciseNames();
     const [selectedExercise, setSelectedExercise] = useState(exerciseNames[0] || '');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showSuggestions, setShowSuggestions] = useState(false);
+
+    const filteredExercises = searchQuery
+        ? exerciseNames.filter(name =>
+            name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        : exerciseNames;
+
+    const handleSelectExercise = (name) => {
+        setSelectedExercise(name);
+        setSearchQuery(name);
+        setShowSuggestions(false);
+    };
 
     const stats = selectedExercise ? getExerciseStats(selectedExercise) : null;
     const history = selectedExercise ? getHistory(selectedExercise) : [];
@@ -23,18 +37,42 @@ export default function ExerciseProgress() {
 
                 {exerciseNames.length > 0 ? (
                     <>
-                        {/* Exercise Selector */}
+                        {/* Exercise Selector with Search */}
                         <div className="form-group">
                             <label className="form-label">Select Exercise</label>
-                            <select
-                                className="form-input exercise-select"
-                                value={selectedExercise}
-                                onChange={(e) => setSelectedExercise(e.target.value)}
-                            >
-                                {exerciseNames.map(name => (
-                                    <option key={name} value={name}>{name}</option>
-                                ))}
-                            </select>
+                            <div className="exercise-search-container">
+                                <input
+                                    type="text"
+                                    className="form-input exercise-search"
+                                    value={searchQuery || selectedExercise}
+                                    onChange={(e) => {
+                                        setSearchQuery(e.target.value);
+                                        setShowSuggestions(true);
+                                    }}
+                                    onFocus={() => {
+                                        setSearchQuery('');
+                                        setShowSuggestions(true);
+                                    }}
+                                    placeholder="Type to search exercises..."
+                                />
+                                {showSuggestions && (
+                                    <div className="exercise-suggestions">
+                                        {filteredExercises.length > 0 ? (
+                                            filteredExercises.slice(0, 10).map(name => (
+                                                <button
+                                                    key={name}
+                                                    className={`suggestion-item ${name === selectedExercise ? 'active' : ''}`}
+                                                    onClick={() => handleSelectExercise(name)}
+                                                >
+                                                    {name}
+                                                </button>
+                                            ))
+                                        ) : (
+                                            <div className="no-suggestions">No exercises found</div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         {stats && (
@@ -138,7 +176,7 @@ export default function ExerciseProgress() {
                         <p className="empty-state-text">
                             Complete some workouts to see your progress
                         </p>
-                        <Link to="/" className="btn btn-primary">
+                        <Link to="/dashboard" className="btn btn-primary">
                             Start a Workout
                         </Link>
                     </div>

@@ -23,22 +23,27 @@ export function useExerciseHistory() {
         return getTrend(history);
     };
 
+    // Get all exercise names from both plans AND sessions
     const getAllExerciseNames = () => {
         const names = new Set();
 
-        // From plans
+        // From plans - exercises the user has defined
         state.plans.forEach(plan => {
             plan.days.forEach(day => {
                 day.exercises.forEach(exercise => {
-                    names.add(exercise.name);
+                    if (exercise.name) {
+                        names.add(exercise.name);
+                    }
                 });
             });
         });
 
-        // From sessions
+        // Also from sessions - includes swapped/new exercises
         state.sessions.forEach(session => {
-            session.exerciseLogs.forEach(log => {
-                names.add(log.exerciseName);
+            session.exerciseLogs?.forEach(log => {
+                if (log.exerciseName) {
+                    names.add(log.exerciseName);
+                }
             });
         });
 

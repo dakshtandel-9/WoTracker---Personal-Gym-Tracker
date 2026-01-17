@@ -86,8 +86,8 @@ export function useWorkoutPlans() {
             id: generateId(),
             name: exerciseData.name || '',
             plannedSets: exerciseData.plannedSets || 3,
-            plannedReps: exerciseData.plannedReps || 10,
-            targetWeight: exerciseData.targetWeight || null,
+            plannedReps: exerciseData.plannedReps || 0,
+            targetReps: exerciseData.targetReps || null,
             notes: exerciseData.notes || '',
         };
 

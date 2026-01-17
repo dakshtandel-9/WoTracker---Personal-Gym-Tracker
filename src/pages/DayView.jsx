@@ -22,7 +22,7 @@ export default function DayView() {
                     <div className="empty-state">
                         <div className="empty-state-icon">❌</div>
                         <h3 className="empty-state-title">Day Not Found</h3>
-                        <Link to="/" className="btn btn-primary">Back to Dashboard</Link>
+                        <Link to="/dashboard" className="btn btn-primary">Back to Dashboard</Link>
                     </div>
                 </div>
             </div>

@@ -26,7 +26,7 @@ export default function Auth() {
                 // After signup, automatically sign in
                 await signIn(email, password);
             }
-            navigate('/');
+            navigate('/dashboard');
         } catch (err) {
             setError(err.message || 'Authentication failed');
         } finally {

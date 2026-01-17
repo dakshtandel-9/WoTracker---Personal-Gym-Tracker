@@ -13,7 +13,7 @@ export default function SetLogger({
     onFail,
 }) {
     const defaultWeight = existingSet?.weight || targetWeight || lastWeight || 0;
-    const defaultReps = existingSet?.reps || plannedReps || lastReps || 0;
+    const defaultReps = existingSet?.reps || plannedReps || lastReps || 10;
 
     const [weight, setWeight] = useState(defaultWeight);
     const [reps, setReps] = useState(defaultReps);
@@ -21,7 +21,7 @@ export default function SetLogger({
     // Update when switching sets
     useEffect(() => {
         setWeight(existingSet?.weight || targetWeight || lastWeight || 0);
-        setReps(existingSet?.reps || plannedReps || lastReps || 0);
+        setReps(existingSet?.reps || plannedReps || lastReps || 10);
     }, [setNumber, existingSet, targetWeight, lastWeight, plannedReps, lastReps]);
 
     const adjustWeight = (delta) => {

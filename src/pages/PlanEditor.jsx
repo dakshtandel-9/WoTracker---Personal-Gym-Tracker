@@ -17,6 +17,7 @@ export default function PlanEditor() {
         addExerciseToDay,
         updateExercise,
         deleteExercise,
+        reorderExercises,
     } = useWorkoutPlans();
 
     const plan = getPlanById(planId);
@@ -26,6 +27,7 @@ export default function PlanEditor() {
     const [showAddDay, setShowAddDay] = useState(false);
     const [editingExercise, setEditingExercise] = useState(null); // { dayId, exercise }
     const [addingExerciseToDay, setAddingExerciseToDay] = useState(null);
+    const [draggedExercise, setDraggedExercise] = useState(null); // { dayId, index }
 
     if (!plan) {
         return (
@@ -74,6 +76,42 @@ export default function PlanEditor() {
     const handleDeleteExercise = (dayId, exerciseId) => {
         deleteExercise(planId, dayId, exerciseId);
         setEditingExercise(null);
+    };
+
+    // Drag and drop handlers
+    const handleDragStart = (dayId, index) => {
+        setDraggedExercise({ dayId, index });
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+    };
+
+    const handleDrop = (dayId, dropIndex) => {
+        if (!draggedExercise || draggedExercise.dayId !== dayId) {
+            setDraggedExercise(null);
+            return;
+        }
+
+        const { index: dragIndex } = draggedExercise;
+        if (dragIndex === dropIndex) {
+            setDraggedExercise(null);
+            return;
+        }
+
+        const day = plan.days.find(d => d.id === dayId);
+        if (!day) return;
+
+        const newExercises = [...day.exercises];
+        const [movedExercise] = newExercises.splice(dragIndex, 1);
+        newExercises.splice(dropIndex, 0, movedExercise);
+
+        reorderExercises(planId, dayId, newExercises);
+        setDraggedExercise(null);
+    };
+
+    const handleDragEnd = () => {
+        setDraggedExercise(null);
     };
 
     return (
@@ -138,15 +176,29 @@ export default function PlanEditor() {
                                 {day.exercises.map((exercise, idx) => (
                                     <div
                                         key={exercise.id}
-                                        className="exercise-item"
-                                        onClick={() => setEditingExercise({ dayId: day.id, exercise })}
+                                        className={`exercise-item ${draggedExercise?.dayId === day.id && draggedExercise?.index === idx ? 'dragging' : ''}`}
+                                        draggable
+                                        onDragStart={() => handleDragStart(day.id, idx)}
+                                        onDragOver={handleDragOver}
+                                        onDrop={() => handleDrop(day.id, idx)}
+                                        onDragEnd={handleDragEnd}
                                     >
+                                        <div className="drag-handle" title="Drag to reorder">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                <line x1="8" y1="6" x2="16" y2="6" />
+                                                <line x1="8" y1="12" x2="16" y2="12" />
+                                                <line x1="8" y1="18" x2="16" y2="18" />
+                                            </svg>
+                                        </div>
                                         <span className="exercise-number">{idx + 1}</span>
-                                        <div className="exercise-info">
+                                        <div
+                                            className="exercise-info"
+                                            onClick={() => setEditingExercise({ dayId: day.id, exercise })}
+                                        >
                                             <span className="exercise-name">{exercise.name}</span>
                                             <span className="exercise-target">{formatExerciseTarget(exercise)}</span>
                                         </div>
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" onClick={() => setEditingExercise({ dayId: day.id, exercise })}>
                                             <polyline points="9 18 15 12 9 6" />
                                         </svg>
                                     </div>
@@ -227,7 +279,7 @@ export default function PlanEditor() {
 
                 {/* Done Button */}
                 <div className="done-actions">
-                    <Link to="/" className="btn btn-primary btn-lg">
+                    <Link to="/dashboard" className="btn btn-primary btn-lg">
                         Done Editing
                     </Link>
                 </div>

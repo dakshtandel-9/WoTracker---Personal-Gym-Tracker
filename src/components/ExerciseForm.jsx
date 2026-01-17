@@ -5,8 +5,8 @@ export default function ExerciseForm({ exercise, onSave, onCancel, onDelete }) {
     const [formData, setFormData] = useState({
         name: exercise?.name || '',
         plannedSets: exercise?.plannedSets || 3,
-        plannedReps: exercise?.plannedReps || 10,
-        targetWeight: exercise?.targetWeight || '',
+        plannedReps: exercise?.plannedReps || 0, // Default to 0
+        targetReps: exercise?.targetReps || '', // Rep range like "6-8"
         notes: exercise?.notes || '',
     });
 
@@ -16,7 +16,7 @@ export default function ExerciseForm({ exercise, onSave, onCancel, onDelete }) {
 
         onSave({
             ...formData,
-            targetWeight: formData.targetWeight ? Number(formData.targetWeight) : null,
+            targetReps: formData.targetReps.trim() || null,
         });
     };
 
@@ -52,27 +52,13 @@ export default function ExerciseForm({ exercise, onSave, onCancel, onDelete }) {
                 </div>
 
                 <div className="form-group">
-                    <label className="form-label">Reps</label>
+                    <label className="form-label">Target Reps</label>
                     <input
-                        type="number"
+                        type="text"
                         className="form-input"
-                        value={formData.plannedReps}
-                        onChange={(e) => handleChange('plannedReps', Number(e.target.value))}
-                        min="1"
-                        max="100"
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label className="form-label">Target Weight (kg)</label>
-                    <input
-                        type="number"
-                        className="form-input"
-                        value={formData.targetWeight}
-                        onChange={(e) => handleChange('targetWeight', e.target.value)}
-                        placeholder="Optional"
-                        min="0"
-                        step="0.5"
+                        value={formData.targetReps}
+                        onChange={(e) => handleChange('targetReps', e.target.value)}
+                        placeholder="e.g., 6-8 or 12"
                     />
                 </div>
             </div>

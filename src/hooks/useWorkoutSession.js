@@ -27,7 +27,7 @@ export function useWorkoutSession() {
         exerciseName: exercise.name,
         plannedSets: exercise.plannedSets,
         plannedReps: exercise.plannedReps,
-        targetWeight: exercise.targetWeight,
+        targetReps: exercise.targetReps,
         sets: [],
         completed: false,
     });

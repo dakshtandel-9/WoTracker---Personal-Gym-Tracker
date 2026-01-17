@@ -91,7 +91,7 @@ export default function History() {
                         <p className="empty-state-text">
                             Complete your first workout to see it here
                         </p>
-                        <Link to="/" className="btn btn-primary">
+                        <Link to="/dashboard" className="btn btn-primary">
                             Start a Workout
                         </Link>
                     </div>

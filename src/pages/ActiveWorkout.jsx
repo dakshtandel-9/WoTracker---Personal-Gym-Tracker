@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useWorkoutSession } from '../hooks/useWorkoutSession';
 import { useExerciseHistory } from '../hooks/useExerciseHistory';
+import { useWorkout } from '../context/WorkoutContext';
 import SetLogger from '../components/SetLogger';
 import RestTimer from '../components/RestTimer';
 import { formatExerciseTarget, formatWeight, formatSessionDuration } from '../utils/formatters';
@@ -18,12 +19,15 @@ export default function ActiveWorkout() {
         completeSession,
         abandonSession,
     } = useWorkoutSession();
-    const { getLastPerformanceForExercise } = useExerciseHistory();
+    const { getLastPerformanceForExercise, getAllExerciseNames } = useExerciseHistory();
+    const { updateSession } = useWorkout();
 
     const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
     const [currentSetNumber, setCurrentSetNumber] = useState(1);
     const [showRestTimer, setShowRestTimer] = useState(false);
     const [elapsedTime, setElapsedTime] = useState(0);
+    const [showSwapModal, setShowSwapModal] = useState(false);
+    const [swapExerciseName, setSwapExerciseName] = useState('');
 
     // Timer for elapsed time
     useEffect(() => {
@@ -64,7 +68,7 @@ export default function ActiveWorkout() {
                         <div className="empty-state-icon">🏋️</div>
                         <h3 className="empty-state-title">No Active Workout</h3>
                         <p className="empty-state-text">Start a workout from the dashboard</p>
-                        <Link to="/" className="btn btn-primary">Go to Dashboard</Link>
+                        <Link to="/dashboard" className="btn btn-primary">Go to Dashboard</Link>
                     </div>
                 </div>
             </div>
@@ -136,6 +140,27 @@ export default function ActiveWorkout() {
         }
     };
 
+    // Swap exercise for today only
+    const handleSwapExercise = (newExerciseName) => {
+        if (!newExerciseName.trim()) return;
+
+        // Update the exercise name in the current session (doesn't change the plan)
+        const updatedLogs = [...activeSession.exerciseLogs];
+        updatedLogs[currentExerciseIndex] = {
+            ...updatedLogs[currentExerciseIndex],
+            exerciseName: newExerciseName.trim(),
+        };
+
+        // Update session in context
+        updateSession({
+            ...activeSession,
+            exerciseLogs: updatedLogs,
+        });
+
+        setShowSwapModal(false);
+        setSwapExerciseName('');
+    };
+
     const totalSets = exerciseLogs.reduce((acc, log) => acc + log.plannedSets, 0);
     const completedTotal = exerciseLogs.reduce((acc, log) =>
         acc + log.sets.filter(s => s.status !== 'skipped').length, 0);
@@ -196,12 +221,29 @@ export default function ActiveWorkout() {
                 {/* Current Exercise */}
                 <section className="current-exercise animate-fadeIn" key={currentLog.id}>
                     <div className="exercise-header-card">
-                        <h2 className="exercise-name">{currentLog.exerciseName}</h2>
+                        <div className="exercise-header-top">
+                            <h2 className="exercise-name">{currentLog.exerciseName}</h2>
+                            <button
+                                className="btn-swap"
+                                onClick={() => {
+                                    setSwapExerciseName(currentLog.exerciseName);
+                                    setShowSwapModal(true);
+                                }}
+                                title="Swap exercise for today"
+                            >
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M16 3l4 4-4 4" />
+                                    <path d="M20 7H4" />
+                                    <path d="M8 21l-4-4 4-4" />
+                                    <path d="M4 17h16" />
+                                </svg>
+                            </button>
+                        </div>
                         <p className="exercise-target">
                             Target: {formatExerciseTarget({
                                 plannedSets: currentLog.plannedSets,
+                                targetReps: currentLog.targetReps,
                                 plannedReps: currentLog.plannedReps,
-                                targetWeight: currentLog.targetWeight,
                             })}
                         </p>
                         {lastPerformance && (
@@ -210,6 +252,70 @@ export default function ActiveWorkout() {
                             </p>
                         )}
                     </div>
+
+                    {/* Swap Exercise Modal */}
+                    {showSwapModal && (
+                        <div className="swap-modal-overlay" onClick={() => setShowSwapModal(false)}>
+                            <div className="swap-modal" onClick={e => e.stopPropagation()}>
+                                <h3>Swap Exercise</h3>
+                                <p className="swap-modal-hint">Replace "{currentLog.exerciseName}" for today only</p>
+
+                                <div className="autocomplete-container">
+                                    <input
+                                        type="text"
+                                        className="form-input"
+                                        value={swapExerciseName}
+                                        onChange={(e) => setSwapExerciseName(e.target.value)}
+                                        placeholder="Type to search exercises..."
+                                        autoFocus
+                                    />
+                                    {swapExerciseName && (
+                                        <div className="autocomplete-dropdown">
+                                            {getAllExerciseNames()
+                                                .filter(name =>
+                                                    name.toLowerCase() !== currentLog.exerciseName.toLowerCase() &&
+                                                    name.toLowerCase().includes(swapExerciseName.toLowerCase())
+                                                )
+                                                .slice(0, 8)
+                                                .map(name => (
+                                                    <button
+                                                        key={name}
+                                                        className="autocomplete-item"
+                                                        onClick={() => {
+                                                            setSwapExerciseName(name);
+                                                        }}
+                                                    >
+                                                        {name}
+                                                    </button>
+                                                ))}
+                                            {getAllExerciseNames()
+                                                .filter(name =>
+                                                    name.toLowerCase() !== currentLog.exerciseName.toLowerCase() &&
+                                                    name.toLowerCase().includes(swapExerciseName.toLowerCase())
+                                                ).length === 0 && (
+                                                    <div className="autocomplete-new">
+                                                        <span>+ Add as new: "{swapExerciseName}"</span>
+                                                    </div>
+                                                )}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="swap-actions">
+                                    <button className="btn btn-ghost" onClick={() => setShowSwapModal(false)}>
+                                        Cancel
+                                    </button>
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={() => handleSwapExercise(swapExerciseName)}
+                                        disabled={!swapExerciseName.trim()}
+                                    >
+                                        Swap
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Sets Overview */}
                     <div className="sets-overview">
@@ -269,6 +375,19 @@ export default function ActiveWorkout() {
                                                     ? 'Skipped'
                                                     : `${set.weight}kg × ${set.reps}`}
                                             </span>
+                                            <button
+                                                className="btn-edit-set"
+                                                onClick={() => {
+                                                    setCurrentSetNumber(set.setNumber);
+                                                    setShowRestTimer(false);
+                                                }}
+                                                title="Edit this set"
+                                            >
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                                </svg>
+                                            </button>
                                             <span className={`set-badge ${set.status}`}>
                                                 {set.status === 'completed' ? '✓' : set.status === 'skipped' ? '—' : '✗'}
                                             </span>

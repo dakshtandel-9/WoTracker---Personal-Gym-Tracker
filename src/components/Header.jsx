@@ -36,7 +36,7 @@ export default function Header() {
                     <div className="header-spacer" />
                 )}
 
-                <Link to="/" className="header-logo">
+                <Link to="/dashboard" className="header-logo">
                     <span className="logo-icon">🏋️</span>
                     <span className="logo-text">WoTracker</span>
                 </Link>
