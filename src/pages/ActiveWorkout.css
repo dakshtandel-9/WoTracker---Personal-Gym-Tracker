@@ -225,6 +225,18 @@
     gap: var(--space-sm);
 }
 
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+}
+
+@media (max-width: 480px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
 .sets-overview {
     display: flex;
     justify-content: center;
@@ -363,15 +375,29 @@
 }
 
 .exercise-list-mini {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-sm);
     margin-bottom: var(--space-xl);
 }
 
+.exercise-list-title {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+}
+
+.exercise-list-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.exercise-mini-wrapper {
+    display: flex;
+    gap: var(--space-xs);
+}
+
 .exercise-mini {
-    flex: 1 1 calc(50% - var(--space-sm));
-    min-width: 140px;
+    flex: 1;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -395,6 +421,64 @@
 .exercise-mini.complete {
     border-color: var(--success);
     background: var(--success-bg);
+}
+
+.set-controls {
+    display: flex;
+    gap: var(--space-xs);
+}
+
+.btn-add-set,
+.btn-reduce-set {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 100%;
+    min-height: 40px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-add-set:hover,
+.btn-reduce-set:hover:not(:disabled) {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+.btn-reduce-set:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.btn-add-workout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-card);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius-md);
+    color: var(--accent-primary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-weight: var(--font-weight-medium);
+    min-height: 40px;
+}
+
+.btn-add-workout:hover {
+    border-color: var(--accent-primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.btn-add-workout svg {
+    flex-shrink: 0;
 }
 
 .mini-name {

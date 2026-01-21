@@ -4,7 +4,6 @@ import { useWorkoutSession } from '../hooks/useWorkoutSession';
 import { useExerciseHistory } from '../hooks/useExerciseHistory';
 import { useWorkout } from '../context/WorkoutContext';
 import SetLogger from '../components/SetLogger';
-import RestTimer from '../components/RestTimer';
 import { formatExerciseTarget, formatWeight, formatSessionDuration } from '../utils/formatters';
 import './ActiveWorkout.css';
 
@@ -24,10 +23,13 @@ export default function ActiveWorkout() {
 
     const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
     const [currentSetNumber, setCurrentSetNumber] = useState(1);
-    const [showRestTimer, setShowRestTimer] = useState(false);
     const [elapsedTime, setElapsedTime] = useState(0);
     const [showSwapModal, setShowSwapModal] = useState(false);
     const [swapExerciseName, setSwapExerciseName] = useState('');
+    const [showAddWorkoutModal, setShowAddWorkoutModal] = useState(false);
+    const [newWorkoutName, setNewWorkoutName] = useState('');
+    const [newWorkoutSets, setNewWorkoutSets] = useState(4);
+    const [newWorkoutReps, setNewWorkoutReps] = useState('8-12');
 
     // Timer for elapsed time
     useEffect(() => {
@@ -85,7 +87,6 @@ export default function ActiveWorkout() {
 
     const handleLogSet = (weight, reps) => {
         logSet(currentLog.id, currentSetNumber, weight, reps, 'completed');
-        setShowRestTimer(true);
 
         // Move to next set or exercise
         if (currentSetNumber < currentLog.plannedSets) {
@@ -103,7 +104,6 @@ export default function ActiveWorkout() {
 
     const handleFailSet = (weight, reps) => {
         failSet(currentLog.id, currentSetNumber, weight, reps);
-        setShowRestTimer(true);
 
         if (currentSetNumber < currentLog.plannedSets) {
             setCurrentSetNumber(prev => prev + 1);
@@ -114,7 +114,6 @@ export default function ActiveWorkout() {
         if (currentExerciseIndex < exerciseLogs.length - 1) {
             setCurrentExerciseIndex(prev => prev + 1);
             setCurrentSetNumber(1);
-            setShowRestTimer(false);
         }
     };
 
@@ -122,7 +121,6 @@ export default function ActiveWorkout() {
         if (currentExerciseIndex > 0) {
             setCurrentExerciseIndex(prev => prev - 1);
             setCurrentSetNumber(1);
-            setShowRestTimer(false);
         }
     };
 
@@ -159,6 +157,64 @@ export default function ActiveWorkout() {
 
         setShowSwapModal(false);
         setSwapExerciseName('');
+    };
+
+    // Add new workout to current session
+    const handleAddWorkout = () => {
+        if (!newWorkoutName.trim()) return;
+
+        const newExerciseLog = {
+            id: crypto.randomUUID(),
+            exerciseName: newWorkoutName.trim(),
+            plannedSets: newWorkoutSets,
+            plannedReps: newWorkoutReps,
+            targetReps: newWorkoutReps,
+            targetWeight: 0,
+            sets: [],
+        };
+
+        // Add to session
+        updateSession({
+            ...activeSession,
+            exerciseLogs: [...activeSession.exerciseLogs, newExerciseLog],
+        });
+
+        // Reset form and close modal
+        setNewWorkoutName('');
+        setNewWorkoutSets(4);
+        setNewWorkoutReps('8-12');
+        setShowAddWorkoutModal(false);
+    };
+
+    // Add more sets to current exercise
+    const handleAddSet = (exerciseIndex) => {
+        const updatedLogs = [...activeSession.exerciseLogs];
+        updatedLogs[exerciseIndex] = {
+            ...updatedLogs[exerciseIndex],
+            plannedSets: updatedLogs[exerciseIndex].plannedSets + 1,
+        };
+
+        updateSession({
+            ...activeSession,
+            exerciseLogs: updatedLogs,
+        });
+    };
+
+    // Reduce sets from current exercise
+    const handleReduceSet = (exerciseIndex) => {
+        const updatedLogs = [...activeSession.exerciseLogs];
+        // Don't allow reducing below 1 set
+        if (updatedLogs[exerciseIndex].plannedSets > 1) {
+            updatedLogs[exerciseIndex] = {
+                ...updatedLogs[exerciseIndex],
+                plannedSets: updatedLogs[exerciseIndex].plannedSets - 1,
+            };
+
+            updateSession({
+                ...activeSession,
+                exerciseLogs: updatedLogs,
+            });
+        }
     };
 
     const totalSets = exerciseLogs.reduce((acc, log) => acc + log.plannedSets, 0);
@@ -336,29 +392,18 @@ export default function ActiveWorkout() {
                         })}
                     </div>
 
-                    {/* Rest Timer */}
-                    {showRestTimer && (
-                        <RestTimer
-                            duration={90}
-                            onComplete={() => setShowRestTimer(false)}
-                            autoStart={true}
-                        />
-                    )}
-
                     {/* Set Logger */}
-                    {!showRestTimer && (
-                        <SetLogger
-                            setNumber={currentSetNumber}
-                            plannedReps={currentLog.plannedReps}
-                            targetWeight={currentLog.targetWeight}
-                            lastWeight={lastPerformance?.weight}
-                            lastReps={lastPerformance?.sets[0]?.reps}
-                            existingSet={existingSet}
-                            onLog={handleLogSet}
-                            onSkip={handleSkipSet}
-                            onFail={handleFailSet}
-                        />
-                    )}
+                    <SetLogger
+                        setNumber={currentSetNumber}
+                        plannedReps={currentLog.plannedReps}
+                        targetWeight={currentLog.targetWeight}
+                        lastWeight={lastPerformance?.weight}
+                        lastReps={lastPerformance?.sets[0]?.reps}
+                        existingSet={existingSet}
+                        onLog={handleLogSet}
+                        onSkip={handleSkipSet}
+                        onFail={handleFailSet}
+                    />
 
                     {/* Logged Sets Summary */}
                     {currentLog.sets.length > 0 && (
@@ -400,25 +445,153 @@ export default function ActiveWorkout() {
 
                 {/* Exercise Quick Nav */}
                 <section className="exercise-list-mini">
-                    {exerciseLogs.map((log, idx) => {
-                        const loggedCount = log.sets.filter(s => s.status !== 'skipped').length;
-                        const isComplete = log.sets.length >= log.plannedSets;
+                    <h3 className="exercise-list-title">Workouts</h3>
+                    <div className="exercise-list-grid">
+                        {exerciseLogs.map((log, idx) => {
+                            const loggedCount = log.sets.filter(s => s.status !== 'skipped').length;
+                            const isComplete = log.sets.length >= log.plannedSets;
 
-                        return (
-                            <button
-                                key={log.id}
-                                className={`exercise-mini ${idx === currentExerciseIndex ? 'active' : ''} ${isComplete ? 'complete' : ''}`}
-                                onClick={() => {
-                                    setCurrentExerciseIndex(idx);
-                                    setShowRestTimer(false);
-                                }}
-                            >
-                                <span className="mini-name">{log.exerciseName}</span>
-                                <span className="mini-progress">{loggedCount}/{log.plannedSets}</span>
-                            </button>
-                        );
-                    })}
+                            return (
+                                <div key={log.id} className="exercise-mini-wrapper">
+                                    <button
+                                        className={`exercise-mini ${idx === currentExerciseIndex ? 'active' : ''} ${isComplete ? 'complete' : ''}`}
+                                        onClick={() => {
+                                            setCurrentExerciseIndex(idx);
+                                        }}
+                                    >
+                                        <span className="mini-name">{log.exerciseName}</span>
+                                        <span className="mini-progress">{loggedCount}/{log.plannedSets}</span>
+                                    </button>
+                                    <div className="set-controls">
+                                        <button
+                                            className="btn-reduce-set"
+                                            onClick={() => handleReduceSet(idx)}
+                                            title="Remove one set"
+                                            disabled={log.plannedSets <= 1}
+                                        >
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                <line x1="5" y1="12" x2="19" y2="12" />
+                                            </svg>
+                                        </button>
+                                        <button
+                                            className="btn-add-set"
+                                            onClick={() => handleAddSet(idx)}
+                                            title="Add one more set"
+                                        >
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                <line x1="12" y1="5" x2="12" y2="19" />
+                                                <line x1="5" y1="12" x2="19" y2="12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            );
+                        })}
+
+                        {/* Add Workout Button */}
+                        <button
+                            className="btn-add-workout"
+                            onClick={() => setShowAddWorkoutModal(true)}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            <span>Add Workout</span>
+                        </button>
+                    </div>
                 </section>
+
+                {/* Add Workout Modal */}
+                {showAddWorkoutModal && (
+                    <div className="swap-modal-overlay" onClick={() => setShowAddWorkoutModal(false)}>
+                        <div className="swap-modal add-workout-modal" onClick={e => e.stopPropagation()}>
+                            <h3>Add New Workout</h3>
+                            <p className="swap-modal-hint">Add an exercise to your current session</p>
+
+                            <div className="form-group">
+                                <label className="form-label">Exercise Name</label>
+                                <div className="autocomplete-container">
+                                    <input
+                                        type="text"
+                                        className="form-input"
+                                        value={newWorkoutName}
+                                        onChange={(e) => setNewWorkoutName(e.target.value)}
+                                        placeholder="Type exercise name..."
+                                        autoFocus
+                                    />
+                                    {newWorkoutName && (
+                                        <div className="autocomplete-dropdown">
+                                            {getAllExerciseNames()
+                                                .filter(name =>
+                                                    name.toLowerCase().includes(newWorkoutName.toLowerCase())
+                                                )
+                                                .slice(0, 8)
+                                                .map(name => (
+                                                    <button
+                                                        key={name}
+                                                        className="autocomplete-item"
+                                                        onClick={() => {
+                                                            setNewWorkoutName(name);
+                                                        }}
+                                                    >
+                                                        {name}
+                                                    </button>
+                                                ))}
+                                            {getAllExerciseNames()
+                                                .filter(name =>
+                                                    name.toLowerCase().includes(newWorkoutName.toLowerCase())
+                                                ).length === 0 && (
+                                                    <div className="autocomplete-new">
+                                                        <span>+ Add as new: "{newWorkoutName}"</span>
+                                                    </div>
+                                                )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label className="form-label">Sets</label>
+                                    <select
+                                        className="form-input"
+                                        value={newWorkoutSets}
+                                        onChange={(e) => setNewWorkoutSets(Number(e.target.value))}
+                                    >
+                                        {[1, 2, 3, 4, 5, 6].map(num => (
+                                            <option key={num} value={num}>{num}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="form-label">Reps</label>
+                                    <input
+                                        type="text"
+                                        className="form-input"
+                                        value={newWorkoutReps}
+                                        onChange={(e) => setNewWorkoutReps(e.target.value)}
+                                        placeholder="e.g., 8-12"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="swap-actions">
+                                <button className="btn btn-ghost" onClick={() => setShowAddWorkoutModal(false)}>
+                                    Cancel
+                                </button>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={handleAddWorkout}
+                                    disabled={!newWorkoutName.trim()}
+                                >
+                                    Add Workout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Complete Button */}
                 <div className="complete-section">
