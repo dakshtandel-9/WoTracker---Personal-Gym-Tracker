@@ -10,6 +10,7 @@ import DayView from './pages/DayView';
 import ActiveWorkout from './pages/ActiveWorkout';
 import History from './pages/History';
 import ExerciseProgress from './pages/ExerciseProgress';
+import DietTracker from './pages/DietTracker';
 import Auth from './pages/Auth';
 import './index.css';
 
@@ -53,6 +54,7 @@ export default function App() {
               <Route path="/workout" element={<PrivateRoute><ActiveWorkout /></PrivateRoute>} />
               <Route path="/history" element={<PrivateRoute><History /></PrivateRoute>} />
               <Route path="/progress" element={<PrivateRoute><ExerciseProgress /></PrivateRoute>} />
+              <Route path="/diet" element={<PrivateRoute><DietTracker /></PrivateRoute>} />
               <Route path="/auth" element={<Navigate to="/auth/login" replace />} />
               <Route path="/auth/:mode" element={<Auth />} />
             </Routes>

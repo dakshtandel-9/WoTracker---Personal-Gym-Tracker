@@ -142,6 +142,10 @@ export default function Dashboard() {
                         <span className="action-icon">🏆</span>
                         <span className="action-label">Progress</span>
                     </Link>
+                    <Link to="/diet" className="quick-action">
+                        <span className="action-icon">🍎</span>
+                        <span className="action-label">Diet</span>
+                    </Link>
                 </section>
             </div>
         </div>

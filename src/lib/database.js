@@ -206,6 +206,90 @@ export async function saveSettings(settings, userId) {
     }
 }
 
+// ===== FOOD ENTRIES =====
+
+export async function fetchFoodEntries(userId, date) {
+    // Get start and end of the day
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const { data, error } = await supabase
+        .from('food_entries')
+        .select('*')
+        .eq('user_id', userId)
+        .gte('consumed_at', startOfDay.toISOString())
+        .lte('consumed_at', endOfDay.toISOString())
+        .order('consumed_at', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching food entries:', error);
+        return [];
+    }
+
+    return data;
+}
+
+export async function saveFoodEntry(entry, userId) {
+    console.log('💾 Saving food entry:', { entry, userId });
+
+    // Use insert for new entries (better RLS compatibility)
+    const { data, error } = await supabase
+        .from('food_entries')
+        .insert({
+            user_id: userId,
+            name: entry.name,
+            calories: entry.calories || 0,
+            protein: entry.protein || 0,
+            carbs: entry.carbs || 0,
+            fats: entry.fats || 0,
+            image_url: entry.imageUrl || null,
+            ai_analysis: entry.aiAnalysis || null,
+            meal_type: entry.mealType || 'snack',
+            consumed_at: entry.consumedAt || new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+    if (error) {
+        console.error('❌ Error saving food entry:', error);
+        console.error('❌ Error code:', error.code);
+        console.error('❌ Error message:', error.message);
+        console.error('❌ Error details:', error.details);
+        return null;
+    }
+
+    console.log('✅ Food entry saved successfully:', data);
+    return data;
+}
+
+export async function deleteFoodEntry(entryId) {
+    const { error } = await supabase
+        .from('food_entries')
+        .delete()
+        .eq('id', entryId);
+
+    if (error) {
+        console.error('Error deleting food entry:', error);
+        return false;
+    }
+    return true;
+}
+
+export async function getDailyCalories(userId, date) {
+    const entries = await fetchFoodEntries(userId, date);
+
+    const totals = entries.reduce((acc, entry) => ({
+        calories: acc.calories + (entry.calories || 0),
+        protein: acc.protein + (entry.protein || 0),
+        carbs: acc.carbs + (entry.carbs || 0),
+        fats: acc.fats + (entry.fats || 0),
+    }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
+
+    return totals;
+}
+
 // ===== HELPER =====
 export function generateId() {
     return crypto.randomUUID();
