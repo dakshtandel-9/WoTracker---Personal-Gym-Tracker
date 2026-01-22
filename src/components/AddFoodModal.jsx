@@ -17,7 +17,7 @@ export default function AddFoodModal({ isOpen, onClose, onSave }) {
         if (isOpen && messages.length === 0) {
             setMessages([{
                 role: 'assistant',
-                content: "Hey! 👋 I'm your Diet Buddy! Tell me what you ate and I'll calculate the nutrition for you.\n\nFor example: \"I had rice 200g and chicken breast 100g\""
+                content: "Hey! 👋 I'm your Diet Buddy! Tell me what you ate and I'll calculate the nutrition for you."
             }]);
         }
     }, [isOpen]);
