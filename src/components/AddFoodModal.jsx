@@ -28,124 +28,136 @@ export default function AddFoodModal({ isOpen, onClose, onSave }) {
         }
     }, [messages]);
 
-    const handleSend = async (forcedMessage = null) => {
-        const userMessage = forcedMessage || input.trim();
-        if (!userMessage || isLoading) return;
-
-        if (!forcedMessage) setInput('');
-        setIsLoading(true);
-
+    const handleSend = async function (forcedMessage) {
+        // Outer try-catch to prevent any crashes
         try {
-            // Check if user is confirming to add food (and we have pending foods)
-            const confirmKeywords = ['yes', 'add', 'save', 'y', 'ok', 'yeah', 'sure'];
-            const msgLower = String(userMessage || '').toLowerCase();
-            const isConfirmation = confirmKeywords.some(keyword =>
-                msgLower.includes(keyword)
-            );
+            var userMessage = '';
+            if (forcedMessage) {
+                userMessage = String(forcedMessage);
+            } else if (input) {
+                userMessage = String(input).trim();
+            }
 
-            console.log('🔍 User message:', userMessage);
-            console.log('🔍 isConfirmation:', isConfirmation);
-            console.log('🔍 pendingFoods:', pendingFoods);
-            console.log('🔍 pendingTotals:', pendingTotals);
+            if (!userMessage || isLoading) return;
 
-            // If user is confirming AND we have pending foods, save them directly without calling AI
-            if (isConfirmation && pendingFoods && pendingFoods.length > 0) {
-                console.log('✅ User confirmed! Saving foods now...');
+            if (!forcedMessage) setInput('');
+            setIsLoading(true);
 
-                // Add user's confirmation message to chat
-                setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+            try {
+                // Check if user is confirming to add food (and we have pending foods)
+                const confirmKeywords = ['yes', 'add', 'save', 'y', 'ok', 'yeah', 'sure'];
+                const msgLower = String(userMessage || '').toLowerCase();
+                const isConfirmation = confirmKeywords.some(keyword =>
+                    msgLower.includes(keyword)
+                );
 
-                // Save all pending foods
-                let savedCount = 0;
-                for (const food of pendingFoods) {
-                    const foodName = food.name || 'Unknown Food';
-                    const foodQuantity = food.quantity || '';
-                    const displayName = foodQuantity ? `${foodName} (${foodQuantity})` : foodName;
+                console.log('🔍 User message:', userMessage);
+                console.log('🔍 isConfirmation:', isConfirmation);
+                console.log('🔍 pendingFoods:', pendingFoods);
+                console.log('🔍 pendingTotals:', pendingTotals);
 
-                    console.log('💾 Saving food:', { displayName, food });
+                // If user is confirming AND we have pending foods, save them directly without calling AI
+                if (isConfirmation && pendingFoods && pendingFoods.length > 0) {
+                    console.log('✅ User confirmed! Saving foods now...');
 
-                    const result = await saveFoodEntry({
-                        id: generateId(),
-                        name: displayName,
-                        calories: parseInt(food.calories) || 0,
-                        protein: parseFloat(food.protein) || 0,
-                        carbs: parseFloat(food.carbs) || 0,
-                        fats: parseFloat(food.fats) || 0,
-                        fiber: parseFloat(food.fiber) || 0,
-                        mealType: getMealType(),
-                        consumedAt: new Date().toISOString(),
-                    }, user.id);
+                    // Add user's confirmation message to chat
+                    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
 
-                    console.log('💾 Save result:', result);
-                    if (result) savedCount++;
+                    // Save all pending foods
+                    let savedCount = 0;
+                    for (const food of pendingFoods) {
+                        const foodName = food.name || 'Unknown Food';
+                        const foodQuantity = food.quantity || '';
+                        const displayName = foodQuantity ? `${foodName} (${foodQuantity})` : foodName;
+
+                        console.log('💾 Saving food:', { displayName, food });
+
+                        const result = await saveFoodEntry({
+                            id: generateId(),
+                            name: displayName,
+                            calories: parseInt(food.calories) || 0,
+                            protein: parseFloat(food.protein) || 0,
+                            carbs: parseFloat(food.carbs) || 0,
+                            fats: parseFloat(food.fats) || 0,
+                            fiber: parseFloat(food.fiber) || 0,
+                            mealType: getMealType(),
+                            consumedAt: new Date().toISOString(),
+                        }, user.id);
+
+                        console.log('💾 Save result:', result);
+                        if (result) savedCount++;
+                    }
+
+                    // Show confirmation message
+                    setMessages(prev => [...prev, {
+                        role: 'assistant',
+                        content: `✅ Added ${savedCount} item(s)!\n\n📊 ${pendingTotals.calories} cal | P: ${pendingTotals.protein}g | C: ${pendingTotals.carbs}g | F: ${pendingTotals.fats}g\n\nClosing in 2 seconds...`
+                    }]);
+
+                    // Clear pending state
+                    setPendingFoods(null);
+                    setPendingTotals(null);
+
+                    // Refresh data and close modal
+                    console.log('📊 Refreshing data...');
+                    onSave();
+                    setTimeout(() => {
+                        handleClose();
+                    }, 2000);
+
+                    setIsLoading(false);
+                    return; // Exit early, don't call AI
                 }
 
-                // Show confirmation message
+                // If user is NOT confirming, OR we don't have pending foods, call AI for analysis
+                console.log('🤖 Calling AI for food analysis...');
+
+                // Add user message to chat
+                setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+
+                // Get AI response for food analysis
+                const chatHistory = messages
+                    .filter(m => m.role !== 'system')
+                    .map(m => ({ role: m.role, content: m.content }));
+
+                const response = await chatWithAssistant(chatHistory, userMessage);
+                console.log('🤖 AI Response:', response);
+
+                // If AI detected foods, save them as pending
+                if (response && response.foods && response.foods.length > 0) {
+                    console.log('📝 Foods detected by AI:', response.foods);
+                    setPendingFoods(response.foods);
+                    setPendingTotals({
+                        calories: response.totalCalories || 0,
+                        protein: response.totalProtein || 0,
+                        carbs: response.totalCarbs || 0,
+                        fats: response.totalFats || 0,
+                        fiber: response.totalFiber || 0
+                    });
+                }
+
+                // Add AI response to chat - ensure message is a string
+                var aiMessage = "I couldn't understand that. Please try again with food name and quantity.";
+                if (response && response.message) {
+                    aiMessage = response.message;
+                }
+                setMessages(function (prev) {
+                    return prev.concat([{
+                        role: 'assistant',
+                        content: String(aiMessage)
+                    }]);
+                });
+            } catch (error) {
+                console.error('❌ Error:', error);
                 setMessages(prev => [...prev, {
                     role: 'assistant',
-                    content: `✅ Added ${savedCount} item(s)!\n\n📊 ${pendingTotals.calories} cal | P: ${pendingTotals.protein}g | C: ${pendingTotals.carbs}g | F: ${pendingTotals.fats}g\n\nClosing in 2 seconds...`
+                    content: '❌ Sorry, something went wrong. Please try again!'
                 }]);
-
-                // Clear pending state
-                setPendingFoods(null);
-                setPendingTotals(null);
-
-                // Refresh data and close modal
-                console.log('📊 Refreshing data...');
-                onSave();
-                setTimeout(() => {
-                    handleClose();
-                }, 2000);
-
+            } finally {
                 setIsLoading(false);
-                return; // Exit early, don't call AI
             }
-
-            // If user is NOT confirming, OR we don't have pending foods, call AI for analysis
-            console.log('🤖 Calling AI for food analysis...');
-
-            // Add user message to chat
-            setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
-
-            // Get AI response for food analysis
-            const chatHistory = messages
-                .filter(m => m.role !== 'system')
-                .map(m => ({ role: m.role, content: m.content }));
-
-            const response = await chatWithAssistant(chatHistory, userMessage);
-            console.log('🤖 AI Response:', response);
-
-            // If AI detected foods, save them as pending
-            if (response && response.foods && response.foods.length > 0) {
-                console.log('📝 Foods detected by AI:', response.foods);
-                setPendingFoods(response.foods);
-                setPendingTotals({
-                    calories: response.totalCalories || 0,
-                    protein: response.totalProtein || 0,
-                    carbs: response.totalCarbs || 0,
-                    fats: response.totalFats || 0,
-                    fiber: response.totalFiber || 0
-                });
-            }
-
-            // Add AI response to chat - ensure message is a string
-            var aiMessage = "I couldn't understand that. Please try again with food name and quantity.";
-            if (response && response.message) {
-                aiMessage = response.message;
-            }
-            setMessages(function (prev) {
-                return prev.concat([{
-                    role: 'assistant',
-                    content: String(aiMessage)
-                }]);
-            });
-        } catch (error) {
-            console.error('❌ Error:', error);
-            setMessages(prev => [...prev, {
-                role: 'assistant',
-                content: `❌ Sorry, something went wrong: ${error.message}\n\nPlease try again!`
-            }]);
-        } finally {
+        } catch (outerError) {
+            console.error('❌ Critical error:', outerError);
             setIsLoading(false);
         }
     };
