@@ -177,12 +177,24 @@ If user wants to edit (e.g., "make protein 30g"):
         });
 
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error?.message || 'Failed to get response');
+            var errorData = {};
+            try {
+                errorData = await response.json();
+            } catch (e) {
+                // ignore parse error
+            }
+            var errorMsg = 'Failed to get response';
+            if (errorData && errorData.error && errorData.error.message) {
+                errorMsg = errorData.error.message;
+            }
+            throw new Error(errorMsg);
         }
 
-        const data = await response.json();
-        let content = data.choices[0]?.message?.content;
+        var data = await response.json();
+        var content = '';
+        if (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+            content = data.choices[0].message.content;
+        }
 
         if (!content) {
             throw new Error('No response from AI');
