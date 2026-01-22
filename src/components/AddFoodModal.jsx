@@ -23,7 +23,9 @@ export default function AddFoodModal({ isOpen, onClose, onSave }) {
     }, [isOpen]);
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (messagesEndRef.current && messagesEndRef.current.scrollIntoView) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
     }, [messages]);
 
     const handleSend = async (forcedMessage = null) => {
@@ -127,11 +129,16 @@ export default function AddFoodModal({ isOpen, onClose, onSave }) {
             }
 
             // Add AI response to chat - ensure message is a string
-            const aiMessage = response?.message || "I couldn't understand that. Please try again with food name and quantity (e.g., '2 eggs' or 'rice 200g').";
-            setMessages(prev => [...prev, {
-                role: 'assistant',
-                content: String(aiMessage)
-            }]);
+            var aiMessage = "I couldn't understand that. Please try again with food name and quantity.";
+            if (response && response.message) {
+                aiMessage = response.message;
+            }
+            setMessages(function (prev) {
+                return prev.concat([{
+                    role: 'assistant',
+                    content: String(aiMessage)
+                }]);
+            });
         } catch (error) {
             console.error('❌ Error:', error);
             setMessages(prev => [...prev, {
