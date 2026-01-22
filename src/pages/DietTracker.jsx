@@ -168,6 +168,13 @@ export default function DietTracker() {
                                 <span className="macro-label">Fats</span>
                             </div>
                         </div>
+                        <div className="macro-card">
+                            <div className="macro-icon">🥬</div>
+                            <div className="macro-info">
+                                <span className="macro-value">{(dailyTotals.fiber || 0).toFixed(1)}g</span>
+                                <span className="macro-label">Fiber</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

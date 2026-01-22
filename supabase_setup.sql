@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS food_entries (
   protein DECIMAL,
   carbs DECIMAL,
   fats DECIMAL,
+  fiber DECIMAL DEFAULT 0,
   image_url TEXT,
   ai_analysis TEXT,
   meal_type TEXT CHECK (meal_type IN ('breakfast', 'lunch', 'dinner', 'snack')),

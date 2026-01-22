@@ -244,6 +244,7 @@ export async function saveFoodEntry(entry, userId) {
             protein: entry.protein || 0,
             carbs: entry.carbs || 0,
             fats: entry.fats || 0,
+            fiber: entry.fiber || 0,
             image_url: entry.imageUrl || null,
             ai_analysis: entry.aiAnalysis || null,
             meal_type: entry.mealType || 'snack',
@@ -285,7 +286,8 @@ export async function getDailyCalories(userId, date) {
         protein: acc.protein + (entry.protein || 0),
         carbs: acc.carbs + (entry.carbs || 0),
         fats: acc.fats + (entry.fats || 0),
-    }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
+        fiber: acc.fiber + (entry.fiber || 0),
+    }), { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0 });
 
     return totals;
 }

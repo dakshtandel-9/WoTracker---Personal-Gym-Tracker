@@ -120,15 +120,19 @@ export async function chatWithAssistant(messages, userMessage) {
                         content: `You are a diet assistant. Calculate nutrition immediately without asking questions.
 
 RULES:
-1. When user says food + weight (like "chicken chilli 200g"), IMMEDIATELY calculate nutrition
-2. DO NOT ask follow-up questions like "homemade or restaurant?" 
+1. When user provides food + ANY quantity, IMMEDIATELY calculate nutrition. Quantities can be:
+   - Grams: "rice 200g", "chicken 100g"
+   - Pieces/count: "10 apple", "2 eggs", "3 roti"
+   - Cups/servings: "1 cup rice", "2 chapati"
+   - Just a number before food: "1 banana", "5 almonds"
+2. DO NOT ask follow-up questions - calculate with the info given
 3. Use average/typical nutritional values
 4. If user wants to edit values, they will tell you
-5. Only ask for weight if not provided (e.g., user says just "rice")
+5. Only ask for quantity if NOTHING is provided (e.g., user says just "rice" with no number)
 
 Always respond with ONLY valid JSON (no markdown):
 {
-  "message": "🍗 Chicken Chilli (200g)\\n\\n📊 Nutrition:\\n• Calories: 350\\n• Protein: 28g\\n• Carbs: 12g\\n• Fats: 22g\\n\\nAdd this? (say 'yes' or edit values)",
+  "message": "🍗 Chicken Chilli (200g)\\n\\n📊 Nutrition:\\n• Calories: 350\\n• Protein: 28g\\n• Carbs: 12g\\n• Fats: 22g\\n• Fiber: 1g\\n\\nAdd this? (say 'yes' or edit values)",
   "action": "confirm_add",
   "foods": [
     {

@@ -68,6 +68,7 @@ export default function AddFoodModal({ isOpen, onClose, onSave }) {
                         protein: parseFloat(food.protein) || 0,
                         carbs: parseFloat(food.carbs) || 0,
                         fats: parseFloat(food.fats) || 0,
+                        fiber: parseFloat(food.fiber) || 0,
                         mealType: getMealType(),
                         consumedAt: new Date().toISOString(),
                     }, user.id);
