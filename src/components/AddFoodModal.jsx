@@ -36,8 +36,9 @@ export default function AddFoodModal({ isOpen, onClose, onSave }) {
         try {
             // Check if user is confirming to add food (and we have pending foods)
             const confirmKeywords = ['yes', 'add', 'save', 'y', 'ok', 'yeah', 'sure'];
+            const msgLower = String(userMessage || '').toLowerCase();
             const isConfirmation = confirmKeywords.some(keyword =>
-                userMessage.toLowerCase().includes(keyword)
+                msgLower.includes(keyword)
             );
 
             console.log('🔍 User message:', userMessage);
