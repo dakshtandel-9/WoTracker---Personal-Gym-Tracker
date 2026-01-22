@@ -61,7 +61,7 @@ export default function AddFoodModal({ isOpen, onClose, onSave }) {
                     console.log('✅ User confirmed! Saving foods now...');
 
                     // Add user's confirmation message to chat
-                    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+                    setMessages(prev => [...prev, { role: 'user', content: String(userMessage) }]);
 
                     // Save all pending foods
                     let savedCount = 0;
@@ -113,7 +113,7 @@ export default function AddFoodModal({ isOpen, onClose, onSave }) {
                 console.log('🤖 Calling AI for food analysis...');
 
                 // Add user message to chat
-                setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+                setMessages(prev => [...prev, { role: 'user', content: String(userMessage) }]);
 
                 // Get AI response for food analysis
                 const chatHistory = messages
