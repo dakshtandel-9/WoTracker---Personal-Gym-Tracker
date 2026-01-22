@@ -113,7 +113,7 @@ export default function AddFoodModal({ isOpen, onClose, onSave }) {
             console.log('🤖 AI Response:', response);
 
             // If AI detected foods, save them as pending
-            if (response.foods && response.foods.length > 0) {
+            if (response && response.foods && response.foods.length > 0) {
                 console.log('📝 Foods detected by AI:', response.foods);
                 setPendingFoods(response.foods);
                 setPendingTotals({
@@ -125,10 +125,11 @@ export default function AddFoodModal({ isOpen, onClose, onSave }) {
                 });
             }
 
-            // Add AI response to chat
+            // Add AI response to chat - ensure message is a string
+            const aiMessage = response?.message || "I couldn't understand that. Please try again with food name and quantity (e.g., '2 eggs' or 'rice 200g').";
             setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: response.message
+                content: String(aiMessage)
             }]);
         } catch (error) {
             console.error('❌ Error:', error);
